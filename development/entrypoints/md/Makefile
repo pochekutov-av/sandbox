@@ -32,6 +32,17 @@ run-tests:  ## run tests
  		pytest tests
 
 
+run-tests-cc:  ## run tests with code coverage html report
+	source venv/bin/activate &&\
+		set -a &&\
+ 		source ../../.env &&\
+ 		source .env &&\
+ 		set +a &&\
+ 		cd ../../../components/databases/md/schemes/md/ &&\
+ 		pytest -p no:cacheprovider -s --cov-report=html --cov=src tests &&\
+ 		open htmlcov/index.html
+
+
 lint:  ## ruff check src tests
 	source venv/bin/activate &&\
 		cd ../../../components/databases/md/schemes/md/ &&\
@@ -53,3 +64,12 @@ alembic-upgrade-heads:  ## database alembic upgrade heads
  		cd ../../../components/databases/md/schemes/md/ &&\
  		python -m db.md.md.entrypoints.alembic upgrade heads
 
+
+create_all:  ## database create all tables (use with clean db)
+	source venv/bin/activate &&\
+		set -a &&\
+ 		source ../../.env &&\
+ 		source .env &&\
+ 		set +a &&\
+ 		cd ../../../components/databases/md/schemes/md/ &&\
+ 		python -m db.md.md.entrypoints.create_all

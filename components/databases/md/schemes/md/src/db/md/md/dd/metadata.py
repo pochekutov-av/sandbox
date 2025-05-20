@@ -5,8 +5,11 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     MetaData,
+    SmallInteger,
+    String,
     Table,  # noqa: F401
     Text,
+    UniqueConstraint,  # noqa: F401
 )
 
 SCHEMA = 'md'
@@ -30,7 +33,12 @@ __all_ = [
     'MetaData',
     'String',
     'Table',
+    'Text',
+    'UniqueConstraint',
 ]
+
+MAX_IDENT_LENGTH = 63
+"""Максимальная длина идентификатора, берем значение как в PostgreSQL 2^6-1."""
 
 
 class Columns:
@@ -40,6 +48,15 @@ class Columns:
         return Column(
             'id',
             Integer,
+            primary_key=True,
+            autoincrement=autoincrement,
+        )
+
+    @staticmethod
+    def primary_key_smallint(autoincrement: bool = True) -> Column:
+        return Column(
+            'id',
+            SmallInteger,
             primary_key=True,
             autoincrement=autoincrement,
         )
@@ -95,21 +112,41 @@ class Columns:
         return Column('deleted', Boolean, nullable=False, comment='Удален')
 
     @staticmethod
+    def note() -> Column:
+        """Comments vs Notes
+        Будем считать, коментарии применяются там где есть место обсуждения -
+        комментарии от нескольких лиц, если же имеет место лишь одно едиственно
+        уточнение используем термин примечание.
+
+        https://support.microsoft.com/en-us/office
+        /insert-comments-and-notes-in-excel-bdcc9f5d-38e2-45b4-9a92-0b2b5c7bf6f8
+        """
+        return Column(
+            'note',
+            Text,
+            nullable=False,
+            comment='Примечание',
+            server_default='',
+        )
+
+    @staticmethod
+    def ident() -> Column:
+        return Column(
+            'ident',
+            String(MAX_IDENT_LENGTH),
+            nullable=False,
+            index=True,
+            unique=True,
+            comment='Уникальный идентификатор',
+        )
+
+    @staticmethod
     def name() -> Column:
         return Column(
             'name',
             Text,
             nullable=False,
             comment='Наименование на русском языке',
-        )
-
-    @staticmethod
-    def name_en() -> Column:
-        return Column(
-            'name_en',
-            Text,
-            nullable=False,
-            comment='Наименование английском языке',
         )
 
     @staticmethod

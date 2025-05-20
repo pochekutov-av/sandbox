@@ -1,4 +1,34 @@
+
 # TODO
+
+## Запуск
+
+Поднять все описанные сервисы
+```
+cd development
+docker compose up --build
+```
+
+
+### БД Master Data
+
+
+Создать с нуля схему БД и загрузить начальные данные:
+```
+cd development/entrypoints/md
+make create_all
+
+```
+
+
+Запуск миграций:
+```
+cd development/entrypoints/md
+make venv-init
+make lint run-tests
+make alembic-upgrade-heads
+```
+
 
 
 ## Настройки для запуска x86 (ms sql server) на Apple Silicon
@@ -31,20 +61,3 @@ General > Virtual Machine Options
         platform: linux/amd64
 ```
 
-## Запуск
-
-Поднять все описанные сервисы
-```
-cd development
-docker compose up --build
-```
-
-
-### Запуск миграций для БД md
-
-```
-cd development/entrypoints/md
-make venv-init
-make run-tests
-make alembic-upgrade-heads
-```

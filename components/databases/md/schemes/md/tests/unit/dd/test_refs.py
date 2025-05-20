@@ -1,17 +1,28 @@
+from db.md.md.dd import tables
 from db.md.md.dd.metadata import METADATA
-from db.md.md.dd.tables import (
-    sites,
-    users,
-)
 
 
-class TestUsers:
+class BaseMixin:
 
     def test_in_metadata(self):
-        assert users in METADATA
+        assert self.table in METADATA
 
 
-class TestSites:
+class TestUsers(BaseMixin):
+    table = tables.users
 
-    def test_in_metadata(self):
-        assert sites in METADATA
+
+class TestSites(BaseMixin):
+    table = tables.sites
+
+
+class TestDbVendors(BaseMixin):
+    table = tables.db_vendors
+
+
+class TestDbServerTypes(BaseMixin):
+    table = tables.db_server_types
+
+
+class TestDbDatabases(BaseMixin):
+    table = tables.db_databases

@@ -17,8 +17,8 @@ sites = Table(
     Columns.modified_by(),
     Columns.deleted(),
     Columns.position(),
+    Columns.note(),
     Columns.name(),
-    Columns.name_en(),
     Column(
         'parent_id',
         Integer,
