@@ -1,6 +1,3 @@
-
-# TODO
-
 ## Запуск
 
 Поднять все описанные сервисы
@@ -10,28 +7,24 @@ docker compose up --build
 ```
 
 
-### БД Master Data
+### Запуск entrypoints:md (Mster data)
 
-
-Создать с нуля схему БД и загрузить начальные данные:
-```
-cd development/entrypoints/md
-make create_all
-
-```
-
-
-Запуск миграций:
+Создать на пустой БД актуальную схему и загрузить начальные данные:
 ```
 cd development/entrypoints/md
 make venv-init
-make lint run-tests
-make alembic-upgrade-heads
+make lint test-unit test
+make create-all loaddata
+```
+
+Накатить миграции:
+```
+cd development/entrypoints/md
+make migrate-upgrade-heads
 ```
 
 
-
-## Настройки для запуска x86 (ms sql server) на Apple Silicon
+## Запуск x86 docker образа на Apple Silicon
 
 ```
  softwareupdate --install-rosetta

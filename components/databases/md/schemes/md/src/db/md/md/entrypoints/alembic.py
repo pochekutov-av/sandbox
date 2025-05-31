@@ -2,7 +2,7 @@ import sys
 
 from alembic.config import CommandLine, Config
 
-from db.md.md.dd.settings import DataBaseSettings
+from db.md.md.settings import DataBaseSettings
 
 
 class Settings:
@@ -24,18 +24,14 @@ def make_config():
     config.set_main_option('version_path_separator', ';')
     config.set_main_option(
         'version_locations', (
-            'db.md.md.migrations:dm;'
-            'db.md.md.migrations:dd;'
-            'db.md.md.migrations:modules'
+            'db.md.md.migrations:data;'
+            'db.md.md.migrations:modules;'
+            'db.md.md.migrations:schema;'
         )
     )
     return config
 
 
-def run_cmd(*args):
+if __name__ == '__main__':    # pragma: no cover
     cli = CommandLine()
-    cli.run_cmd(make_config(), cli.parser.parse_args(args))
-
-
-if __name__ == '__main__':
-    run_cmd(*sys.argv[1:])
+    cli.run_cmd(make_config(), cli.parser.parse_args(sys.argv[1:]))

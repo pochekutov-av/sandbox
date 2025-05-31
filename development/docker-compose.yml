@@ -1,4 +1,4 @@
-name: "sandbox"
+name: "pochekutov-sandbox"
 
 services:
 
@@ -15,6 +15,7 @@ services:
       interval: 10s
       retries: 5
       timeout: 5s
+
 
   db-server-mssql-2019:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -62,7 +63,7 @@ services:
       context: ./databases/mssql/initdb
     environment:
       - DATABASE_HOST=${DATABASE_SITE_02_HOST}
-      - DATABASE_PORT=${DATABASE_SITE_02_HOST}
+      - DATABASE_PORT=${DATABASE_SITE_02_PORT}
       - DATABASE_USER=${DATABASE_SITE_02_USER}
       - DATABASE_PASS=${DATABASE_SITE_02_PASS}
     volumes:

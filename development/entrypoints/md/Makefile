@@ -1,75 +1,101 @@
 .DEFAULT_GOAL := help
+.PHONY: help clean venv-init test test-cc lint lint-fix create-all migrate-upgrade-heads
 
 SHELL := /bin/bash
 
-help: ## show help message
-	# command from: https://gist.github.com/prwhite/8168133
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+PACKAGE_DIR := ../../../components/databases/md/schemes/md/
+PACKAGE_MODULE := db.md.md
+ENV_MAIN_FILE := ../../.env
 
 
-clear: ## clear all cache and pyc files
-	cd ../../../components/databases/md/schemes/md/ &&\
-		rm -rf .pytest_cache htmlcov  &&\
+help:
+	@echo "Please use \`make <target>' where <target> is one of"
+	@echo "  help		to print this help message"
+	@echo "  help-a	to print venv activate shell comands"
+	@echo "  clean		to clean all cache and pyc files"
+	@echo "  venv-init 	to remove old and create new virtual env, install required packages"
+	@echo "  test		to run tests"
+	@echo "  test-unit		to run only unit tests"
+	@echo "  test-cc	to run tests with code coverage html report"
+	@echo "  lint		to run linters"
+	@echo "  lint-fix	to run linters with fix"
+	@echo "  create-all	to create all tables (use with empty db)"
+	@echo "  loaddata	to load initial data (use with empty tables)"
+	@echo "  migrate-upgrade-heads to alemic upgrade heads"
+
+
+help-a:
+	@echo "source venv/bin/activate && set -a && source $(ENV_MAIN_FILE) && source .env && set +a && cd $(PACKAGE_DIR)"
+
+
+clean:
+	cd $(PACKAGE_DIR) &&\
+		rm -rf .pytest_cache htmlcov .coverage  &&\
 		find . -name "*.egg-info" -exec rm -rf {} \; &&\
 		find . -name "*.pyc" -exec rm -f {} \;
 
 
-venv-init:  ## remove old and create new virtual env, install package req
+venv-init:
 	rm -rf venv && python3.13 -m venv venv
 	source venv/bin/activate  &&\
 		python --version &&\
 		pip install --upgrade pip &&\
-		cd ../../../components/databases/md/schemes/md/ &&\
+		cd $(PACKAGE_DIR) &&\
 		pip install -e .[dev]
 
-run-tests:  ## run tests
+
+test:
 	source venv/bin/activate &&\
-		set -a &&\
- 		source ../../.env &&\
- 		source .env &&\
- 		set +a &&\
- 		cd ../../../components/databases/md/schemes/md/ &&\
+		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
+ 		cd $(PACKAGE_DIR) &&\
  		pytest tests
 
 
-run-tests-cc:  ## run tests with code coverage html report
+test-unit:
+	# здесь специально не устанавливаем переменные окружения поскольку
+	# unit тесты должны работать без реальных БД, web серверов
 	source venv/bin/activate &&\
-		set -a &&\
- 		source ../../.env &&\
- 		source .env &&\
- 		set +a &&\
- 		cd ../../../components/databases/md/schemes/md/ &&\
+ 		cd $(PACKAGE_DIR) &&\
+ 		pytest tests/unit
+
+
+test-cc:
+	source venv/bin/activate &&\
+		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
+ 		cd $(PACKAGE_DIR) &&\
  		pytest -p no:cacheprovider -s --cov-report=html --cov=src tests &&\
  		open htmlcov/index.html
 
 
-lint:  ## ruff check src tests
+lint:
 	source venv/bin/activate &&\
-		cd ../../../components/databases/md/schemes/md/ &&\
+		cd $(PACKAGE_DIR) &&\
 		ruff check src tests
 
-lint-autofix:  ## fix ruff E501, next fix ruff
+
+lint-fix:
 	source venv/bin/activate &&\
-		cd ../../../components/databases/md/schemes/md/ &&\
+		cd $(PACKAGE_DIR) &&\
 		yapf -irp src tests &&\
 		ruff check src tests --fix
 
 
-alembic-upgrade-heads:  ## database alembic upgrade heads
+create-all:
 	source venv/bin/activate &&\
-		set -a &&\
- 		source ../../.env &&\
- 		source .env &&\
- 		set +a &&\
- 		cd ../../../components/databases/md/schemes/md/ &&\
- 		python -m db.md.md.entrypoints.alembic upgrade heads
+		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
+ 		cd $(PACKAGE_DIR) &&\
+ 		python -m "$(PACKAGE_MODULE).entrypoints.create_all"
 
 
-create_all:  ## database create all tables (use with clean db)
+loaddata:
 	source venv/bin/activate &&\
-		set -a &&\
- 		source ../../.env &&\
- 		source .env &&\
- 		set +a &&\
- 		cd ../../../components/databases/md/schemes/md/ &&\
- 		python -m db.md.md.entrypoints.create_all
+		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
+ 		cd $(PACKAGE_DIR) &&\
+ 		python -m "$(PACKAGE_MODULE).fixtures.init.load"
+
+
+migrate-upgrade-heads:
+	source venv/bin/activate &&\
+		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
+ 		cd $(PACKAGE_DIR) &&\
+ 		python -m "$(PACKAGE_MODULE).entrypoints.alembic"  upgrade heads

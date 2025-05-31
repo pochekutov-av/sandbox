@@ -9,26 +9,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql.ddl import CreateSchema
 
-from db.md.md.dd import logging
-from db.md.md.dd.settings import DataBaseSettings
-from db.md.md.dd.tables import METADATA
+from db.md.md import logging
+from db.md.md.schema.tables import METADATA
+from db.md.md.settings import DataBaseSettings
 
 
-class Settings:
-    db = DataBaseSettings()
-
-
-class Logger:
-    logging.configure(Settings.db.LOGGING_CONFIG)
-
-
-def create_all():
-    engine = create_engine(
-        Settings.db.database_url,
-        echo=Settings.db.SA_ECHO,
-        echo_pool=Settings.db.SA_ECHO_POOL
-    )
-
+def create_all(engine):
     # Создать схему указаную в METADATA
     with engine.connect() as conn:
         existed_schemas = conn.dialect.get_schema_names(conn)
@@ -40,5 +26,12 @@ def create_all():
     METADATA.create_all(engine)
 
 
-if __name__ == '__main__':
-    create_all()
+if __name__ == '__main__':    # pragma: no cover
+    db_settings = DataBaseSettings()
+    logging.configure(db_settings.LOGGING_CONFIG)
+    engine = create_engine(
+        db_settings.database_url,
+        echo=db_settings.SA_ECHO,
+        echo_pool=db_settings.SA_ECHO_POOL
+    )
+    create_all(engine=engine)

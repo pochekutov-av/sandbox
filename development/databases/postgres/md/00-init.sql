@@ -9,8 +9,11 @@ CREATE DATABASE md
     IS_TEMPLATE = False;
 COMMENT ON DATABASE md IS 'The master data management database';
 
+\c md postgres;
+ALTER DATABASE md SET TIMEZONE='UTC';
 
-CREATE DATABASE md_test
+
+CREATE DATABASE test_md
     WITH
     OWNER = postgres
     ENCODING = 'UTF8'
@@ -21,11 +24,5 @@ CREATE DATABASE md_test
     IS_TEMPLATE = False;
 COMMENT ON DATABASE md_test IS 'Test database for md';
 
-
-\c md_test postgres;
-ALTER DATABASE md_test SET TIMEZONE='UTC';
-
-
-\c md postgres;
-ALTER DATABASE md SET TIMEZONE='UTC';
-
+\c test_md postgres;
+ALTER DATABASE test_md SET TIMEZONE='UTC';

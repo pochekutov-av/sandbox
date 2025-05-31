@@ -1,5 +1,3 @@
-
-
 ## Образы docker
 
 {% list tabs %}
@@ -17,20 +15,20 @@
 
 ## Соглашения проекта "database".
 
-Одна схема БД представлено одним пакетом python.
+Одна схема БД представлена одним пакетом python.
 
 Имя пакета формируется по правилу db_{project-ident}_{schema},
-например db_p123_app (в проекте №123 основная схема пирложения app).
+например db_p123_app (в проекте №123 основная схема приложения app).
 
 При создании пакетов нужно использовать [namespace](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/),
-чтобы можно было "from db.some_project.some_scheme.dd.tables import some_table".
+чтобы можно было "from db.the_project.the_schema.schema.tables import some_table".
 
-Структура проекта: 
-  - dd - data definition, описание таблиц индексов
+Структура проекта:
   - entrypoints - входные точки для запуска миграции и других задач
+  - fixtures - варианты инициализации БД (с нуля, для тестов)
   - migrations - миграции
   - modules - объекты БД, функции процедуры и т.п.
-  - dd/metadata.py - sqlalchemy metadata
+  - schema - описание схемы БД, таблицы, индексы
 
 Имя таблицам даем во множественном числе, просто так договариваемся (
 как аргумент единственно число может конфликтовать с ключевыми словами чаще).
@@ -38,10 +36,11 @@
 При описании таблиц не используем напрямую импорты из sqlalchemy, нужные типы
 импортируем из metadata схемы. Что позволит делать более стандартизовано.
 
-Миграции разделяем над схемой разделяем на три [папки-ветки](https://alembic.sqlalchemy.org/en/latest/branches.html):
-  - dd, data definition - создание и модификация схемы БД, индексов
-  - dm, data manipulation - изменение содержимого в таблицах
-  - modules - изменение процедур, функций, представлений.
+Миграции разделяем на три [папки-ветки](https://alembic.sqlalchemy.org/en/latest/branches.html):
+  - schema, схема БД - таблицы и индексы;
+  - data, данные приложения (инициализация начальных, bulk load);
+  - modules, модулем называем набор процедур, функций, представлений (sp, fn,
+v), объединенных единых смыслом (например для конкретного справочника);
 
 Миграции структурируем по вложенным папкам, в имени файла содержится время
 yyyy/mm/dd/hhmm-{revision}_slug.py.
@@ -51,8 +50,8 @@ yyyy/mm/dd/hhmm-{revision}_slug.py.
 
 Создать пустую начальную миграцию для конкретной ветви:
 ```
-python -m db.md.md.entrypoints.alembic revision -m "init" --head=base --branch-label=dd --version-path=src/db/md/md/migrations/dd
-python -m db.md.md.entrypoints.alembic revision -m "init" --head=base --branch-label=dm --version-path=src/db/md/md/migrations/dm
+python -m db.md.md.entrypoints.alembic revision -m "init" --head=base --branch-label=schema --version-path=src/db/md/md/migrations/schema
+python -m db.md.md.entrypoints.alembic revision -m "init" --head=base --branch-label=data --version-path=src/db/md/md/migrations/data
 python -m db.md.md.entrypoints.alembic revision -m "init" --head=base --branch-label=modules --version-path=src/db/md/md/migrations/modules
 ```
 
@@ -71,21 +70,57 @@ python -m db.md.md.entrypoints.alembic current
 поскольку в "version locations" не входят вложенные папки.
 (FAILED: Path .../migrations/dm/2025/05/07 is not represented in current version locations)
 ```
-python -m db.md.md.entrypoints.alembic revision -m "some"  --head dm@head
+python -m db.md.md.entrypoints.alembic revision -m "some"  --head data@head
 ```
 
 Создать с autogenerate
 ```
-python -m db.md.md.entrypoints.alembic revision --autogenerate -m "users and sites" --head dd@head
+python -m db.md.md.entrypoints.alembic revision --autogenerate -m "base tables" --head schema@head
 ```
 
+Откатить 1 миграцию в ветке schema:
+```
+python -m db.md.md.entrypoints.alembic downgrade schema@-1
+```
 
 Откатить все миграции:
 ```
 python -m db.md.md.entrypoints.alembic downgrade base
 ```
 
-Откатить 1 миграцию в ветке dd:
+### Информация о версии сервера, имени БД
+
+{% list tabs %}
+
+- Postgres
+
+  TODO
+
+- MS SQL
+
+Версия сервера:
 ```
-python -m db.md.md.entrypoints.alembic downgrade dd@-1
+SELECT @@VERSION;
 ```
+
+Имя БД:
+```
+SELECT DB_NAME();
+```
+
+- Oracle
+
+Версия сервера:
+```
+SELECT * FROM v$version;
+SELECT * FROM product_component_version;
+```
+
+Имя БД:
+```
+SELECT * FROM global_name;
+SELECT ora_database_name FROM dual;
+SELECT * FROM v$database;
+```
+
+{% endlist %}
