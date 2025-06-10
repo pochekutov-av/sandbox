@@ -1,0 +1,72 @@
+name: "pochekutov-sandbox"
+
+services:
+
+  db-server-postgres:
+    image: postgres:16.8
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
+      start_period: 10s
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+
+  db-server-mssql-2019:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    platform: linux/amd64
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA="Y"
+      - MSSQL_SA_PASSWORD=${MSSQL_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${MSSQL_PASSWORD} -Q 'SELECT 1' || exit 1"]
+      start_period: 10s
+      interval: 10s
+      retries: 10
+      timeout: 5s
+
+  database-md-init:
+    build:
+      context: ./databases/postgres/initdb
+    environment:
+      - DATABASE_HOST=${DATABASE_MD_HOST}
+      - DATABASE_PORT=${DATABASE_MD_PORT}
+      - DATABASE_USER=${DATABASE_MD_USER}
+      - DATABASE_PASS=${DATABASE_MD_PASS}
+    volumes:
+      - ./databases/postgres/md:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      - db-server-postgres
+
+  database-site01-init:
+    build:
+      context: ./databases/postgres/initdb
+    environment:
+      - DATABASE_HOST=${DATABASE_SITE_01_HOST}
+      - DATABASE_PORT=${DATABASE_SITE_01_PORT}
+      - DATABASE_USER=${DATABASE_SITE_01_USER}
+      - DATABASE_PASS=${DATABASE_SITE_01_PASS}
+    volumes:
+      - ./databases/postgres/site01:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      - db-server-postgres
+
+  database-site02-init:
+    build:
+      context: ./databases/mssql/initdb
+    environment:
+      - DATABASE_HOST=${DATABASE_SITE_02_HOST}
+      - DATABASE_PORT=${DATABASE_SITE_02_PORT}
+      - DATABASE_USER=${DATABASE_SITE_02_USER}
+      - DATABASE_PASS=${DATABASE_SITE_02_PASS}
+    volumes:
+      - ./databases/mssql/site02:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      - db-server-mssql-2019
