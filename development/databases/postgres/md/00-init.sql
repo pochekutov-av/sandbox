@@ -5,7 +5,7 @@ CREATE DATABASE md
     LC_COLLATE = 'en_US.utf8'
     LC_CTYPE = 'en_US.utf8'
     TABLESPACE = pg_default
-    CONNECTION LIMIT = -1
+    CONNECTION LIMIT = 10
     IS_TEMPLATE = False;
 COMMENT ON DATABASE md IS 'The master data management database';
 
@@ -20,7 +20,7 @@ CREATE DATABASE test_md
     LC_COLLATE = 'en_US.utf8'
     LC_CTYPE = 'en_US.utf8'
     TABLESPACE = pg_default
-    CONNECTION LIMIT = -1
+    CONNECTION LIMIT = 10
     IS_TEMPLATE = False;
 COMMENT ON DATABASE md_test IS 'Test database for md';
 

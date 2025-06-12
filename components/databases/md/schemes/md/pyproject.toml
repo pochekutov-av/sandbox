@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "db_md_md"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Pochekutov AV", email="andrey@pochekutov.ru" },
 ]
@@ -17,9 +17,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "SQLAlchemy==2.0.40",
-    "alembic==1.15.2",
-    "psycopg2-binary==2.9.10",
+    "SQLAlchemy==2.0.41",
+    "alembic==1.16.1",
+    "psycopg-binary==3.2.9",
+    "psycopg==3.2.9",
     "pydantic-settings==2.9.1",
 ]
 
@@ -30,9 +31,9 @@ Issues = "https://github.com/pypa/sampleproject/issues"
 
 [project.optional-dependencies]
 dev = [
-    "pytest==8.3.5",
-    "pytest-cov==6.1.1",
-    "ruff==0.11.9",
+    "pytest==8.4.0",
+    "pytest-cov==6.2.0",
+    "ruff==0.11.13",
     "yapf==0.43.0",
 ]
 

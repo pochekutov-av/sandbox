@@ -1,23 +1,25 @@
 """
 Вспомогательные функции для модуля fixtures.
 """
-
-import sqlalchemy as sa
+import psycopg as pg
 
 from db.md.md.settings import DataBaseSettings
 
 
-def create_engine():
-    db_setting = DataBaseSettings()
-    engine = sa.create_engine(
-        db_setting.database_url,
-        echo=db_setting.SA_ECHO,
-        echo_pool=db_setting.SA_ECHO_POOL
-    )
-    return engine
-
-
-def execute_script(conn: sa.Connection, script_path: str):
+def execute_script(conn: pg.Connection, script_path: str):
     with open(script_path) as f:
-        script_text = sa.text(f.read())
+        script_text = f.read()
         conn.execute(script_text)
+
+
+def create_conn():
+    settings = DataBaseSettings()
+    return pg.connect(
+        host=settings.DATABASE_HOST,
+        port=settings.DATABASE_PORT,
+        dbname=settings.DATABASE_NAME,
+        user=settings.DATABASE_USER,
+        password=settings.DATABASE_PASS,
+    # row_factory - результаты возвращать в виде named-tuple
+        row_factory=pg.rows.namedtuple_row,
+    )

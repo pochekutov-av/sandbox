@@ -17,12 +17,12 @@ class DataBaseSettings(BaseSettings):
     @property
     def database_url(self):
         port_url = (
-            'postgresql+psycopg2://'
+            'postgresql+psycopg://'
             '{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
             '?application_name={app_name}'
         )
         without_port_url = (
-            'postgresql+psycopg2://{db_user}:{db_pass}@{db_host}/{db_name}'
+            'postgresql+psycopg://{db_user}:{db_pass}@{db_host}/{db_name}'
             '?application_name={app_name}'
         )
         url = port_url if self.DATABASE_PORT else without_port_url
