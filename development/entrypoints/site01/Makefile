@@ -15,11 +15,12 @@ help:
 	@echo "  clean		to clean all cache and pyc files"
 	@echo "  venv-init 	to remove old and create new virtual env, install required packages"
 	@echo "  test		to run tests"
-	@echo "  test-unit		to run only unit tests"
+	@echo "  test-unit	to run only unit tests"
 	@echo "  test-cc	to run tests with code coverage html report"
 	@echo "  lint		to run linters"
 	@echo "  lint-fix	to run linters with fix"
-	@echo "  create-all	to create all tables (use with empty db)"
+	@echo "  create-tables	to create tables (use with empty db)"
+	@echo "  create-routines	to create routines"
 	@echo "  loaddata	to load initial data (use with empty tables)"
 	@echo "  migrate-upgrade-heads to alemic upgrade heads"
 
@@ -80,11 +81,18 @@ lint-fix:
 		ruff check src tests --fix
 
 
-create-all:
+create-tables:
 	source venv/bin/activate &&\
 		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
  		cd $(PACKAGE_DIR) &&\
- 		python -m "$(PACKAGE_MODULE).entrypoints.create_all"
+ 		python -m "$(PACKAGE_MODULE).entrypoints.create_tables"
+
+
+create-routines:
+	source venv/bin/activate &&\
+		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
+ 		cd $(PACKAGE_DIR) &&\
+ 		python -m "$(PACKAGE_MODULE).entrypoints.create_routines"
 
 
 loaddata:

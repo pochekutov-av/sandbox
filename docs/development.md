@@ -14,7 +14,7 @@ docker compose up --build
 cd development/entrypoints/site01
 make venv-init
 make lint test-unit test
-make create-all loaddata
+make create-tables create-routines loaddata
 ```
 
 Накатить миграции:

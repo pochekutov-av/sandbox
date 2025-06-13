@@ -46,12 +46,12 @@ line-length = 80
 # (without being too pedantic) might look like the following:
 # https://docs.astral.sh/ruff/linter/#rule-selection
 select = [
-    "E", # pycodestyle
-    "F", # Pyflakes
-    "UP", # pyupgrade
-    "B", # flake8-bugbear
-    "SIM", # flake8-simplify
-    "I", # isort
+    "B",    # flake8-bugbear
+    "E",    # pycodestyle
+    "F",    # Pyflakes
+    "I",    # isort
+    "SIM",  # flake8-simplify
+    "UP",   # pyupgrade
 ]
 
 [tool.yapf]

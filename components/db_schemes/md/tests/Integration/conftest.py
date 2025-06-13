@@ -5,7 +5,8 @@ import psycopg as pg
 import pytest
 import sqlalchemy as sa
 
-from db.md.entrypoints.create_all import METADATA, create_all
+from db.md.entrypoints.create_routines import create_routines
+from db.md.entrypoints.create_tables import METADATA, create_tables
 from db.md.fixtures.init.load import loaddata
 from db.md.settings import DataBaseSettings
 
@@ -63,11 +64,12 @@ def fixture_schema(private_connection: pg.Connection) -> bool:
             conn.commit()
 
     drop_all()
-    create_all(engine=engine)
+    create_tables(engine=engine)
 
-    # TODO: создать views, procedures, functions
     with create_conn() as conn:
         loaddata(conn=conn)
+        conn.commit()
+        create_routines(conn=conn)
         conn.commit()
     return True
 
