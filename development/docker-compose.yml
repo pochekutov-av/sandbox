@@ -16,7 +16,6 @@ services:
       retries: 5
       timeout: 5s
 
-
   db-server-mssql-2019:
     image: mcr.microsoft.com/mssql/server:2019-latest
     platform: linux/amd64
@@ -31,19 +30,6 @@ services:
       interval: 10s
       retries: 10
       timeout: 5s
-
-  database-md-init:
-    build:
-      context: ./databases/postgres/initdb
-    environment:
-      - DATABASE_HOST=${DATABASE_MD_HOST}
-      - DATABASE_PORT=${DATABASE_MD_PORT}
-      - DATABASE_USER=${DATABASE_MD_USER}
-      - DATABASE_PASS=${DATABASE_MD_PASS}
-    volumes:
-      - ./databases/postgres/md:/docker-entrypoint-initdb.d:ro
-    depends_on:
-      - db-server-postgres
 
   database-site01-init:
     build:

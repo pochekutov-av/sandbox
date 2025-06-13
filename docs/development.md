@@ -7,11 +7,11 @@ docker compose up --build
 ```
 
 
-### Запуск entrypoints:md (Mster data)
+### Запуск entrypoints:site01, схема master data
 
-Создать на пустой БД актуальную схему и загрузить начальные данные:
+Создать на пустой БД последнюю версию схемы и загрузить начальные данные:
 ```
-cd development/entrypoints/md
+cd development/entrypoints/site01
 make venv-init
 make lint test-unit test
 make create-all loaddata

@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "db.md"
+version = "0.0.2"
+authors = [
+  { name="Pochekutov AV", email="andrey@pochekutov.ru" },
+]
+description = "database master data (md), schema md"
+readme = "README.md"
+requires-python = "==3.13.*"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "SQLAlchemy==2.0.41",
+    "alembic==1.16.1",
+    "psycopg-binary==3.2.9",
+    "psycopg==3.2.9",
+    "pydantic-settings==2.9.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
+Issues = "https://github.com/pypa/sampleproject/issues"
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.4.0",
+    "pytest-cov==6.2.0",
+    "ruff==0.11.13",
+    "yapf==0.43.0",
+]
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+# select:
+# a configuration that enables some of the most popular rules
+# (without being too pedantic) might look like the following:
+# https://docs.astral.sh/ruff/linter/#rule-selection
+select = [
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "UP", # pyupgrade
+    "B", # flake8-bugbear
+    "SIM", # flake8-simplify
+    "I", # isort
+]
+
+[tool.yapf]
+based_on_style = "pep8"
+spaces_before_comment = 4
+column_limit = 80
+allow_split_before_dict_value = false
+dedent_closing_brackets = true
+split_complex_comprehension = true
+split_arguments_when_comma_terminated = true
+blank_line_before_nested_class_or_def = true
+
+split_before_dict_set_generator = true
+split_before_first_argument = true
+split_before_arithmetic_operator = true
+split_before_logical_operator = true
+split_before_bitwise_operator = true
