@@ -1,3 +1,3 @@
 CREATE DATABASE site02 COLLATE Cyrillic_General_CI_AS;
 GO
-CREATE DATABASE site02_test COLLATE Cyrillic_General_CI_AS;
+CREATE DATABASE test_site02 COLLATE Cyrillic_General_CI_AS;
