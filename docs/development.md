@@ -7,11 +7,11 @@ docker compose up --build
 ```
 
 
-### Запуск entrypoints:site01, схема master data
+### Запуск entrypoints/site01/db/md, схема master data
 
 Создать на пустой БД последнюю версию схемы и загрузить начальные данные:
 ```
-cd development/entrypoints/site01
+cd entrypoints/site01/db/md
 make venv-init
 make lint test-unit test
 make create-tables create-routines loaddata
@@ -19,9 +19,28 @@ make create-tables create-routines loaddata
 
 Накатить миграции:
 ```
-cd development/entrypoints/md
+cd entrypoints/site01/db/md
 make migrate-upgrade-heads
 ```
+
+Накатить схему и fixture для работы с django:
+
+```
+cd entrypoints/site01/db/md
+make tune-django loaddata-django
+```
+
+
+
+### Запуск entrypoints/site01/wsgi, django проект
+
+
+```
+cd entrypoints/site01/wsgi
+make venv-init
+```
+
+
 
 
 ## Запуск x86 docker образа на Apple Silicon

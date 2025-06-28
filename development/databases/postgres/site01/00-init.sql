@@ -28,5 +28,3 @@ COMMENT ON DATABASE site01_test IS 'Test database for site01';
 
 \c test_site01 postgres;
 ALTER DATABASE site01_test SET TIMEZONE='UTC';
-
-

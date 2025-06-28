@@ -124,3 +124,12 @@ SELECT * FROM v$database;
 ```
 
 {% endlist %}
+
+
+### Посмотреть код представления 
+
+
+- Postgres
+  
+ select pg_get_viewdef('schema.name', true)
+ 
