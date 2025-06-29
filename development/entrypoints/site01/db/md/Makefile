@@ -51,14 +51,14 @@ test:
 	source venv/bin/activate &&\
 		set -a && source $(ENV_MAIN_FILE) && source .env && set +a &&\
  		cd $(PACKAGE_DIR) &&\
- 		pytest tests
+ 		pytest tests -s
 
 # здесь специально не устанавливаем переменные окружения поскольку
 # unit тесты должны работать без реальных БД, web серверов
 test-unit:
 	source venv/bin/activate &&\
  		cd $(PACKAGE_DIR) &&\
- 		pytest tests/unit
+ 		pytest tests/unit -s
 
 
 test-cc:

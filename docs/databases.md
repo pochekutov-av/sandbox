@@ -133,3 +133,9 @@ SELECT * FROM v$database;
   
  select pg_get_viewdef('schema.name', true)
  
+
+
+
+### Ссылки
+
+https://www.sqlines.com/postgresql/how-to/return_result_set_from_stored_procedure

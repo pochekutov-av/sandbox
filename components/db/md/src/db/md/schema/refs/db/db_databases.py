@@ -59,7 +59,7 @@ db_databases = Table(
         ForeignKey('db_server_types.id'),
         index=True,
         nullable=False,
-        comment='Версии сервера'
+        comment='Версия сервера'
     ),
     Column(
         'mssql_instance',

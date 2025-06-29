@@ -75,8 +75,11 @@ def fixture_schema(private_connection: pg.Connection) -> bool:
 
 
 @pytest.fixture(name='conn', scope='function')
-def fixture_conn(private_connection) -> psycopg.Connection:
-    """Подключение к БД для использования в тестах, делает rollback. """
+def fixture_conn(private_connection, schema) -> psycopg.Connection:
+    """Подключение к БД для использования в тестах, делает rollback.
+
+    Зависимость от fixture schema обязательна для актуальности кода routines.
+    """
     try:
         yield private_connection
     finally:
