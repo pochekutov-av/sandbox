@@ -61,11 +61,12 @@ CALL md.db_database_edit(
 );
 --    FETCH ALL FROM errors_cur;
 COMMIT TRANSACTION;
---- ROLLBACK;
---- DELETE FROM md.db_databases;
+-- ROLLBACK;
+-- SELECT * FROM md.db_databases;
+-- DELETE FROM md.db_databases;
 
 
--- Посмотреть версии:
+## Посмотреть версии
 SELECT 'DROP procedure ' || oid::regprocedure || ';'
 FROM   pg_proc
 WHERE  proname = 'db_database_edit'  -- name without schema-qualification
@@ -88,6 +89,22 @@ WHERE  proname = 'db_database_edit'  -- name without schema-qualification
 	END IF;
 
 
+	IF _mode = 'change' THEN
+
+		UPDATE md.db_databases d
+			SET 
+				modified_at = _now,
+				modified_by_id = user_id,
+				ident = _ident,
+				host = _host,
+				name = _name,
+				port = _port,
+				type_id = _type_id,
+				mssql_instance = _mssql_instance,
+				note = _note
+		WHERE d.id=_id;
+
+	END IF;
+
 END;
 $$;
-

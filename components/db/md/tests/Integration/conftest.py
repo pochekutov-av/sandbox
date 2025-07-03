@@ -1,6 +1,5 @@
 import os
 
-import psycopg
 import psycopg as pg
 import pytest
 import sqlalchemy as sa
@@ -34,15 +33,8 @@ def create_conn():
     )
 
 
-@pytest.fixture(name='private_connection', scope='session')
-def fixture_private_connection() -> psycopg.Connection:
-    """Подключение к БД не обернутое rollback,
-    в тестах не должно использоваться."""
-    return create_conn()
-
-
 @pytest.fixture(name='schema', scope='session')
-def fixture_schema(private_connection: pg.Connection) -> bool:
+def fixture_schema() -> bool:
     """Готовая БД для работы: создана схема, накачена init fixture, накачены
     все представления, хранимые процедуры и функции.
     Важно: транзакции открытой нет, все изменения будут сохранены.
@@ -74,8 +66,18 @@ def fixture_schema(private_connection: pg.Connection) -> bool:
     return True
 
 
+@pytest.fixture(name='private_connection', scope='session')
+def fixture_private_connection(schema) -> pg.Connection:
+    """Подключение к БД не обернутое rollback,
+    в тестах не должно использоваться.
+    """
+    # Зависит от fixture schema, для того чтобы схема БД была создана
+    assert schema
+    return create_conn()
+
+
 @pytest.fixture(name='conn', scope='function')
-def fixture_conn(private_connection, schema) -> psycopg.Connection:
+def fixture_conn(private_connection) -> pg.Connection:
     """Подключение к БД для использования в тестах, делает rollback.
 
     Зависимость от fixture schema обязательна для актуальности кода routines.
