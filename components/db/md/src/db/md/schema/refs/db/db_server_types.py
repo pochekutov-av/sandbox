@@ -5,10 +5,7 @@
 """
 from db.md.schema.metadata import (
     METADATA,
-    Column,
     Columns,
-    ForeignKey,
-    SmallInteger,
     Table,
 )
 
@@ -23,13 +20,8 @@ db_server_types = Table(
     Columns.deleted(),
     Columns.position(),
     Columns.ident(),
-    Column(
-        'vendor_id',
-        SmallInteger,
-        ForeignKey('db_vendors.id'),
-        index=True,
-        nullable=False,
-        comment='Производитель'
+    Columns.foreign_key_smallint(
+        'vendor_id', 'db_vendors.id', comment='Производитель'
     ),
     Columns.note(),
     comment='Версии серверов БД'

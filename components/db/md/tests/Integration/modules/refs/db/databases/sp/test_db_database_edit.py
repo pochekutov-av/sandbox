@@ -25,7 +25,7 @@ class ProcParams:
 
 class TestCase_db_database_edit(TestCase):
 
-    def call_proc(self, conn: pg.Connection,  params: ProcParams):
+    def call_proc(self, conn: pg.Connection, params: ProcParams):
         return self.call(
             conn, procedures.db_database_edit, params=asdict(params)
         )
@@ -91,8 +91,8 @@ class TestCase_db_database_edit(TestCase):
             id=add_res.output.id,
             user_id=users.app2.id,
             now=add_params.now + timedelta(1),
-            port = add_params.port + 1,
-            type_id = db_server_types.mssql2019.id,
+            port=add_params.port + 1,
+            type_id=db_server_types.mssql2019.id,
             postfix='_changed',
         )
         change_res = self.call_proc(conn, change_params)
@@ -132,7 +132,8 @@ class TestCase_db_database_edit(TestCase):
         db2_params = self.create_params(mode='add', postfix='db2')
         db2_res = self.call_proc(conn, db2_params)
         db1_change_params = self.create_params(
-            mode='change', id=db1_res.output.id, postfix='db1_change')
+            mode='change', id=db1_res.output.id, postfix='db1_change'
+        )
         self.call_proc(conn, db1_change_params)
 
         databases = self.fetchall(conn, tables.db_databases)

@@ -15,13 +15,8 @@
 
 from db.md.schema.metadata import (
     METADATA,
-    Column,
     Columns,
-    ForeignKey,
-    Integer,
-    SmallInteger,
     Table,
-    Text,
     UniqueConstraint,
 )
 
@@ -35,39 +30,13 @@ db_databases = Table(
     Columns.modified_by(),
     Columns.deleted(),
     Columns.ident(),
-    Column(
-        'host',
-        Text,
-        nullable=False,
-        comment='Хост',
+    Columns.varchar('host', comment='Хост'),
+    Columns.varchar('name', comment='Имя'),
+    Columns.int('port', nullable=True, comment='Порт'),
+    Columns.foreign_key_smallint(
+        'type_id', 'db_server_types.id', comment='Версия сервера'
     ),
-    Column(
-        'name',
-        Text,
-        nullable=False,
-        comment='Имя',
-    ),
-    Column(
-        'port',
-        Integer,
-        nullable=True,
-        comment='Порт',
-    ),
-    Column(
-        'type_id',
-        SmallInteger,
-        ForeignKey('db_server_types.id'),
-        index=True,
-        nullable=False,
-        comment='Версия сервера'
-    ),
-    Column(
-        'mssql_instance',
-        Text,
-        nullable=False,
-        server_default='',
-        comment='MS-SQL Instance',
-    ),
+    Columns.varchar('mssql_instance', comment='MS-SQL Instance'),
     Columns.note(),
     UniqueConstraint(
         'host',
