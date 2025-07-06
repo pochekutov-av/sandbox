@@ -1,15 +1,13 @@
 from db.md.schema.metadata import (
     METADATA,
-    Column,
     Columns,
-    DateTime,
     Table,
 )
 
 users = Table(
     'users',
     METADATA,
-    Columns.primary_key_integer(),
+    Columns.primary_key_int(),
     Columns.created_at(),
     Columns.created_by(),
     Columns.modified_at(),
@@ -18,18 +16,16 @@ users = Table(
     Columns.ident(),    # Логин, domain\ivanov_av, или ivanov_av
     Columns.name(),    # Имя "Иванов А.В."
     Columns.email(),    # уникальности НЕ требуем
-    Column(
+    Columns.datetime(
         'last_login',
-        DateTime,
         nullable=True,
         comment='Дата последнего успешного ввода пароля'
     ),
-    Column(
+    Columns.datetime(
         'last_activity',
-        DateTime,
         nullable=True,
         comment='Дата последней активности (точность около часа)'
     ),
-    Columns.varchar(name='password', comment='Пароль'),
+    Columns.varchar('password', nullable=True, comment='Пароль'),
     comment='Пользователи'
 )

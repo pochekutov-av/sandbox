@@ -52,7 +52,7 @@ MAX_IDENT_LENGTH = 63
 class Columns:
 
     @staticmethod
-    def primary_key_integer(autoincrement: bool = True) -> Column:
+    def primary_key_int(autoincrement: bool = True) -> Column:
         return Column(
             'id',
             Integer,
@@ -67,6 +67,40 @@ class Columns:
             SmallInteger,
             primary_key=True,
             autoincrement=autoincrement,
+        )
+
+    @staticmethod
+    def foreign_key_smallint(
+        name: str,
+        target: str,
+        *,
+        comment: str,
+        nullable: bool = False
+    ) -> Column:
+        return Column(
+            name,
+            SmallInteger,
+            ForeignKey(target),
+            index=True,
+            comment=comment,
+            nullable=nullable,
+        )
+
+    @staticmethod
+    def foreign_key_int(
+        name: str,
+        target: str,
+        *,
+        comment: str,
+        nullable: bool = False
+    ) -> Column:
+        return Column(
+            name,
+            Integer,
+            ForeignKey(target),
+            index=True,
+            comment=comment,
+            nullable=nullable,
         )
 
     @staticmethod
@@ -172,10 +206,28 @@ class Columns:
         )
 
     @staticmethod
-    def varchar(*, name: str, comment: str, nullable: bool = True) -> Column:
+    def varchar(name: str, *, comment: str, nullable: bool = False) -> Column:
         return Column(
             name,
             String,
+            comment=comment,
+            nullable=nullable,
+        )
+
+    @staticmethod
+    def datetime(name: str, *, comment: str, nullable: bool = False) -> Column:
+        return Column(
+            name,
+            DateTime,
+            comment=comment,
+            nullable=nullable,
+        )
+
+    @staticmethod
+    def int(name: str, *, comment: str, nullable: bool = False) -> Column:
+        return Column(
+            name,
+            Integer,
             comment=comment,
             nullable=nullable,
         )

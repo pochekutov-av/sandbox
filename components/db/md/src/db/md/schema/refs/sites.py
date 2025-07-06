@@ -1,16 +1,13 @@
 from db.md.schema.metadata import (
     METADATA,
-    Column,
     Columns,
-    ForeignKey,
-    Integer,
     Table,
 )
 
 sites = Table(
     'sites',
     METADATA,
-    Columns.primary_key_integer(autoincrement=False),
+    Columns.primary_key_int(autoincrement=False),
     Columns.created_at(),
     Columns.created_by(),
     Columns.modified_at(),
@@ -19,13 +16,8 @@ sites = Table(
     Columns.position(),
     Columns.note(),
     Columns.name(),
-    Column(
-        'parent_id',
-        Integer,
-        ForeignKey('sites.id'),
-        index=True,
-        nullable=True,
-        comment='Родитель'
+    Columns.foreign_key_int(
+        'parent_id', 'sites.id', nullable=True, comment='Родитель'
     ),
     comment='Производственные площадки'
 )
